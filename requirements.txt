@@ -1,0 +1,8 @@
+pandas
+numpy
+faker
+scikit-learn
+networkx
+onnx
+onnxruntime
+skl2onnx

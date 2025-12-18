@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Final
+from typing import List
 
 # Project root inferred from src/utils/config.py -> ../../
 ROOT: Final[Path] = Path(__file__).resolve().parents[2]
@@ -17,8 +18,45 @@ SKLEARN_DIR: Final[Path] = MODELS_DIR / "sklearn"
 OUTPUTS_DIR: Final[Path] = ROOT / "outputs"
 FIGURES_DIR: Final[Path] = OUTPUTS_DIR / "figures"
 REPORTS_DIR: Final[Path] = OUTPUTS_DIR / "reports"
+FEATURES_DIR: Final[Path] = OUTPUTS_DIR / "features"
 LOGS_DIR: Final[Path] = ROOT / "logs"
 SCRIPTS_DIR: Final[Path] = ROOT / "scripts"
+
+# Allowed values and labels
+ALLOWED_LABELS = {"normal", "structuring", "circular", "layering"}
+ALLOWED_CHANNELS = [
+    "online_banking",
+    "branch_cash",
+    "atm",
+    "mobile_wallet",
+    "crypto_exchange",
+]
+ALLOWED_CURRENCIES = ["USD", "EUR", "GBP", "INR", "SGD"]
+
+# Canonical split fractions (time-ordered)
+TRAIN_FRACTION: Final[float] = 0.70
+VAL_FRACTION: Final[float] = 0.15
+TEST_FRACTION: Final[float] = 0.15
+FRACTION_TOLERANCE: Final[float] = 0.05
+
+# Feature engineering defaults
+ROLLING_WINDOWS_HOURS: Final[List[int]] = [24, 72]
+SMALL_TX_THRESHOLD: Final[float] = 1000.0
+SEQUENCE_N: Final[int] = 10
+
+# Detector thresholds
+STRUCTURING_CONTAMINATION: Final[float] = 0.02  # expected anomaly ratio
+LAYERING_COUNT_24H_THRESHOLD: Final[int] = 20
+LAYERING_COUNT_72H_THRESHOLD: Final[int] = 50
+LAYERING_MEAN_GAP_24H_SEC: Final[float] = 1800.0  # 30 minutes
+LAYERING_OUT_DEG_THRESHOLD: Final[int] = 10
+
+# Fusion weights (weighted average fallback)
+FUSION_WEIGHTS: Final[dict] = {
+    "structuring": 0.4,
+    "circular": 0.3,
+    "layering": 0.3,
+}
 
 # Canonical raw dataset file paths
 TRANSACTIONS_CSV: Final[Path] = RAW_DIR / "transaction.csv"
@@ -55,6 +93,7 @@ def ensure_dirs() -> None:
         ONNX_DIR,
         PYTORCH_DIR,
         SKLEARN_DIR,
+        FEATURES_DIR,
         FIGURES_DIR,
         REPORTS_DIR,
         LOGS_DIR,
